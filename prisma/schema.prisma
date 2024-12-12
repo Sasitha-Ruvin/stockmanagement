@@ -19,9 +19,9 @@ model Material{
   id          Int                @id @default(autoincrement())
   name        String             @unique
   description String?
-  quantity    String             
+  quantity    Int            
   supplier    String?
-  unitPrice   String
+  unitPrice   Float
   isDeleted   Boolean            @default(false)
   
 }
@@ -29,10 +29,9 @@ model EquipmentStock{
   id              Int           @id @default(autoincrement())
   name            String
   description     String?
-  quantity        String
-  unitPrice       String
+  quantity        Int
+  unitPrice       Float
   supplier        String?
-  dateAdded       DateTime?
   isDeleted       Boolean            @default(false)
 }
 
@@ -40,9 +39,8 @@ model RentalStocks{
   id              Int         @id@default(autoincrement())
   name            String
   description     String?
-  quantity        String
-  unitPrice       String?
-  dateAdded       DateTime?
+  quantity        Int
+  unitPrice       Float
   isDeleted       Boolean            @default(false)
 }
 

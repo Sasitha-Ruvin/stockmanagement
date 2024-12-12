@@ -53,59 +53,64 @@ const useMaterialStock = (searchQuery:string)=>{
         fetchProducts();
     },[]);
 
-    const handleDelete = async () =>{
-        if(!selectedProductId){
-            Swal.fire("Error","Select A Product to Remove",'info')
-            return;
+    const handleDelete = async () => {
+        if (!selectedProductId) {
+          Swal.fire("Error", "Select A Product to Remove", 'info');
+          return;
         }
-
+      
         Swal.fire({
-            title:'Are you sure you want to delete item from Stock?',
-            text:"You will not able to reverse this action",
-            icon:'warning',
-            showCancelButton:true,
-            confirmButtonColor:'#d33',
-            cancelButtonColor:"#3085d6",
-            confirmButtonText:'Yes'
-        }).then(async(result)=>{
-            if(result.isConfirmed){
-                Swal.fire({
-                    title:'Deleting..',
-                    text:'Please Wait while Deleting is Processing',
-                    icon:'info',
-                    showCancelButton:false,
-                    willOpen:()=>{
-                        Swal.showLoading();
-                    }
-                })
-                try {
-                    await fetch(`api/materialstock/${selectedProductId}`,{
-                        method:'DELETE'
-                    });
-
-                    Swal.fire({
-                        title:'User Deleted',
-                        text: "The Item has been removed from Stocks Successfully",
-                        icon:'success',
-                        confirmButtonText:'OK'
-                    }).then(()=>{
-                        fetchProducts();
-                        setSelectedProductId(null);
-                    });
-                    
-                } catch (error) {
-
-                    console.log('Error Deleting: ', error);
-                    Swal.fire({
-                        title:'Error',
-                        text:'There was an Issue deleting Item',
-                        icon:'error',
-                        confirmButtonText:'OK'
-                    });
-                }
+          title: 'Are you sure you want to delete item from Stock?',
+          text: "You will not be able to reverse this action",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#d33',
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: 'Yes'
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            Swal.fire({
+              title: 'Deleting...',
+              text: 'Please wait while deletion is processing',
+              icon: 'info',
+              showCancelButton: false,
+              willOpen: () => {
+                Swal.showLoading();
+              }
+            });
+      
+            try {
+              const response = await fetch(`/api/materialstock/${selectedProductId}`, {
+                method: 'DELETE',
+              });
+      
+              if (!response.ok) {
+                throw new Error("Failed to delete item");
+              }
+      
+              Swal.fire({
+                title: 'Item Deleted',
+                text: "The Item has been removed from Stocks Successfully",
+                icon: 'success',
+                confirmButtonText: 'OK'
+              }).then(() => {
+                fetchProducts();
+                setSelectedProductId(null);  // Reset the selection
+              });
+      
+            } catch (error) {
+              console.log('Error Deleting: ', error);
+              Swal.fire({
+                title: 'Error',
+                text: 'There was an issue deleting the item',
+                icon: 'error',
+                confirmButtonText: 'OK'
+              });
             }
+          }
         });
-    }
+      }
+      
 
     return{
         allProducts,

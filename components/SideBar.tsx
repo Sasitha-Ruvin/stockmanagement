@@ -32,13 +32,25 @@ const SideBar = () => {
         {/* Navigation */}
         <ul>
           <li className="mb-4">
-              <SideBarLinkButton href="/materialstocks/index" label="Stock Management" />
+              <SideBarLinkButton href="/materialstocks/index" label="Material Stock Management" />
           </li>
           <li className="mb-4">
-              <SideBarLinkButton href="/rents/index" label="Rent Management" />
+              <SideBarLinkButton href="/equipment/index" label="Equipment Stock Management" />
+          </li>
+          <li className="mb-4">
+              <SideBarLinkButton href="/rents/index" label="Rental Stock Management" />
           </li>
           <li className="mb-4">
               <SideBarLinkButton href="/issues/index" label="Stock Issues" />
+          </li>
+          <li className="mb-4">
+              <SideBarLinkButton href="/issues/index" label="Equipment Issues" />
+          </li>
+          <li className="mb-4">
+              <SideBarLinkButton href="/issues/index" label="On Going Rentals" />
+          </li>
+          <li className='mb-4'>
+            <SideBarLinkButton href='/purchase/index' label='Purchases' />
           </li>
           {/* <li className="mb-4">
               <SideBarLinkButton href="/orders/index" label="Orders Management" />

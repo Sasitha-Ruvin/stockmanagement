@@ -7,11 +7,11 @@ import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 
 const initialFormData = {
-  name:'',
+  name: '',
   description: '',
   quantity: '',
   supplier: '',
-  unitPrice:'',
+  unitPrice: '',
 }
 
 const StockAddForm = () => {
@@ -25,7 +25,7 @@ const StockAddForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     // Validate required fields
     if (!formData.name || !formData.quantity || !formData.supplier || !formData.unitPrice) {
       Swal.fire({
@@ -35,7 +35,7 @@ const StockAddForm = () => {
       });
       return;
     }
-  
+
     try {
       const formDataObject = new FormData();
       formDataObject.append('name', formData.name);
@@ -43,12 +43,12 @@ const StockAddForm = () => {
       formDataObject.append('quantity', formData.quantity);
       formDataObject.append('supplier', formData.supplier);
       formDataObject.append('unitPrice', formData.unitPrice);
-  
+
       const response = await fetch('/api/materialstock', {
         method: 'POST',
         body: formDataObject,
       });
-  
+
       if (response.ok) {
         Swal.fire({
           title: 'Item Added',
@@ -75,7 +75,6 @@ const StockAddForm = () => {
       });
     }
   };
-  
 
   return (
     <div className="flex h-screen">
@@ -104,7 +103,7 @@ const StockAddForm = () => {
               value={formData.quantity}
               onChange={handleChange}
               variant="outlined"
-              required
+              type="number" 
             />
             <CustomTextField
               label="Supplier"
@@ -119,6 +118,8 @@ const StockAddForm = () => {
               value={formData.unitPrice}
               onChange={handleChange}
               variant="outlined"
+              type="number" 
+              InputLabelProps={{ step: "0.01" }} // Allows decimal precision for prices
             />
           </div>
           <div className="mt-4">
