@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  name     String?
+  username String @unique
+  password String
+}
+
+
+model Material{
+  id          Int                @id @default(autoincrement())
+  name        String             @unique
+  description String?
+  quantity    String             
+  supplier    String?
+  unitPrice   String
+  isDeleted   Boolean            @default(false)
+  
+}
+model EquipmentStock{
+  id              Int           @id @default(autoincrement())
+  name            String
+  description     String?
+  quantity        String
+  unitPrice       String
+  supplier        String?
+  dateAdded       DateTime?
+  isDeleted       Boolean            @default(false)
+}
+
+model RentalStocks{
+  id              Int         @id@default(autoincrement())
+  name            String
+  description     String?
+  quantity        String
+  unitPrice       String?
+  dateAdded       DateTime?
+  isDeleted       Boolean            @default(false)
+}
+
+model Supplier{
+  id          Int             @id @default(autoincrement())
+  name        String
+  contact     String
+  address     String
+  email       String
+}
+
+
