@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import SideBar from '@/components/SideBar';
 import { BarChart } from '@mui/x-charts/BarChart';
+import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
 
 interface FrequencyData {
     purchaseDate: string;
@@ -20,6 +22,14 @@ const DashboardPage = () => {
     const [year, setYear] = useState<number>(new Date().getFullYear());
     const [month, setMonth] = useState<number | string>("");
     const [yearRange, setYearRange] = useState<YearRange | null>(null); // To hold dynamic year range
+    const router = useRouter();
+
+    useEffect(() => {
+        const authToken = Cookies.get("authToken");
+        if (!authToken) {
+          router.push("/");
+        }
+      }, [router]);
 
     useEffect(() => {
         // Fetch dynamic year range and initial chart data

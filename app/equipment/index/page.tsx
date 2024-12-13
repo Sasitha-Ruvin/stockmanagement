@@ -7,6 +7,8 @@ import DataGridTable from "@/components/DataGridTable"
 import SearchBar from "@/components/SearchBar"
 import ActionButton from "@/components/ui/ActionButton"
 import useEquipment from "@/app/hooks/useEquipment"
+import { useRouter } from "next/navigation"
+import Cookies from 'js-cookie';
 
 const columns:GridColDef[]=[
     {field:'id',headerName:'ID', width:100},
@@ -21,6 +23,14 @@ const columns:GridColDef[]=[
 const page = () => {
 
     const [searchQuery, setSearchQuery] = useState('');
+    const router = useRouter();
+
+    useEffect(() => {
+        const authToken = Cookies.get("authToken");
+        if (!authToken) {
+          router.push("/");
+        }
+      }, [router]);
 
     const{
     allProducts,
