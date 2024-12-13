@@ -2,7 +2,7 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 
-const useMaterialStock = (searchQuery:string)=>{
+const useEquipment = (searchQuery:string)=>{
     const router = useRouter();
     const [allProducts, setAllProducts] = useState<any[]>([]);
     const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
@@ -10,21 +10,22 @@ const useMaterialStock = (searchQuery:string)=>{
 
     const fetchProducts = async () =>{
         try {
-            const response = await fetch('/api/materialstock');
+            const response = await fetch('/api/equipmentstock');
             const data = await response.json();
             const formattedData = data.map((product:any)=>({
                 id:product.id,
                 name:product.name,
                 description:product.description,
-                quantity:product.quantity,
+                quntity:product.quantity,
                 supplier:product.supplier,
-                unitPrice:product.unitPrice,
+                unitPrice:product.unitPrice
             }));
 
             setAllProducts(formattedData);
-            setFilteredProducts(formattedData);
+            setFilteredProducts(formattedData)
             
         } catch (error) {
+
             console.error("Error fetching Materials: ", error);
             Swal.fire({
                 title:'Error',
@@ -50,7 +51,7 @@ const useMaterialStock = (searchQuery:string)=>{
 
     useEffect(()=>{
         fetchProducts();
-    },[]);
+    },[])
 
     const handleDelete = async () => {
         if (!selectedProductId) {
@@ -79,7 +80,7 @@ const useMaterialStock = (searchQuery:string)=>{
             });
       
             try {
-              const response = await fetch(`/api/materialstock/${selectedProductId}`, {
+              const response = await fetch(`/api/equipmentstock/${selectedProductId}`, {
                 method: 'DELETE',
               });
       
@@ -109,15 +110,16 @@ const useMaterialStock = (searchQuery:string)=>{
           }
         });
       }
-      
 
-    return{
+      return{
         allProducts,
+        fetchProducts,
         filteredProducts,
         selectedProductId,
         setSelectedProductId,
         handleDelete
-    }
+      }
 }
 
-export default useMaterialStock
+export default useEquipment
+

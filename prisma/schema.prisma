@@ -14,42 +14,65 @@ model User {
   password String
 }
 
-
-model Material{
-  id          Int                @id @default(autoincrement())
-  name        String             @unique
+model Material {
+  id          Int             @id @default(autoincrement())
+  name        String          @unique
   description String?
-  quantity    Int            
+  quantity    Int
   supplier    String?
   unitPrice   Float
-  isDeleted   Boolean            @default(false)
-  
-}
-model EquipmentStock{
-  id              Int           @id @default(autoincrement())
-  name            String
-  description     String?
-  quantity        Int
-  unitPrice       Float
-  supplier        String?
-  isDeleted       Boolean            @default(false)
+  isDeleted   Boolean         @default(false)
+  purchases   PurchaseItem[]  // Corrected the relation to point to PurchaseItem
 }
 
-model RentalStocks{
-  id              Int         @id@default(autoincrement())
-  name            String
-  description     String?
-  quantity        Int
-  unitPrice       Float
-  isDeleted       Boolean            @default(false)
+model Purchase {
+  id            Int             @id @default(autoincrement())
+  purchaseDate  DateTime
+  purchaseItems PurchaseItem[]
 }
 
-model Supplier{
+model PurchaseItem {
+  id          Int       @id @default(autoincrement())
+  quantity    Int
+  material    Material   @relation(fields: [materialId], references: [id])
+  materialId  Int
+  purchase    Purchase   @relation(fields: [purchaseId], references: [id])
+  purchaseId  Int
+}
+
+
+model EquipmentStock {
   id          Int             @id @default(autoincrement())
+  name        String
+  description String?
+  quantity    Int
+  unitPrice   Float
+  supplier    String?
+  isDeleted   Boolean         @default(false)
+ 
+}
+
+
+
+
+model RentalStocks {
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String?
+  quantity    Int
+  unitPrice   Float
+  isDeleted   Boolean    @default(false)
+}
+
+
+
+model Supplier {
+  id          Int    @id @default(autoincrement())
   name        String
   contact     String
   address     String
   email       String
 }
+
 
 

@@ -27,7 +27,7 @@ const StockAddForm = () => {
     e.preventDefault();
 
     // Validate required fields
-    if (!formData.name || !formData.quantity || !formData.supplier || !formData.unitPrice) {
+    if (!formData.name || !formData.quantity ||!formData.unitPrice) {
       Swal.fire({
         icon: 'error',
         title: 'Error',

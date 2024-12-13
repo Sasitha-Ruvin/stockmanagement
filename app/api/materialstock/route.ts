@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     const addedDate = formData.get('addedDate')?.toString();
 
     // Handle missing data if needed
-    if (!name || !quantity || !supplier || !unitPrice) {
+    if (!name || !quantity || !unitPrice) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
