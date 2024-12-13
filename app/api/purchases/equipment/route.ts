@@ -27,10 +27,11 @@ export async function POST(request: Request) {
     try {
         const purchaseDate = formData.get("purchaseDate")?.toString();
         const items = formData.get("items")?.toString();
+        const totalPrice = parseFloat(formData.get("totalPrice")?.toString() || '0');  // Get totalPrice from formData
 
-        if (!purchaseDate || !items) {
+        if (!purchaseDate || !items || isNaN(totalPrice)) {
             return NextResponse.json(
-                { error: "Missing Required Fields: purchaseDate or items" },
+                { error: "Missing Required Fields: purchaseDate, items, or totalPrice" },
                 { status: 400 }
             );
         }
@@ -46,6 +47,7 @@ export async function POST(request: Request) {
             const newPurchase = await prismaTransaction.equipPurchase.create({
                 data: {
                     purchaseDate: new Date(purchaseDate),
+                    totalPrice: totalPrice,  // Include totalPrice
                     purchaseEquipment: {
                         create: parsedItems.map((item: any) => ({
                             equipmentId: parseInt(item.materialId, 10),

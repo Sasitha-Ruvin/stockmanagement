@@ -76,6 +76,7 @@ model EquipPurchase {
   id                    Int       @id @default(autoincrement())
   purchaseDate          DateTime
   purchaseEquipment     EquipmentItem[]
+  totalPrice            Float     @default(0) 
 }
 
 model EquipmentItem {

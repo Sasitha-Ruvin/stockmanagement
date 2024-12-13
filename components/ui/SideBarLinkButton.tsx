@@ -9,7 +9,7 @@ interface SideBarLinkButtonProps {
 
 const SideBarLinkButton = ({href, label}:SideBarLinkButtonProps) => {
   return (
-    <Link href={href}>
+    <Link href={href} prefetch={true}>
         <button className='flex items-center p-2 text-lg text-white hover:bg-blue-400 cursor-pointer'>
             {label}
         </button>

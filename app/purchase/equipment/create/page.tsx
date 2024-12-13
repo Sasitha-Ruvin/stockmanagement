@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 import { useState, useEffect } from 'react';
 import { Button, TextField, MenuItem, IconButton } from '@mui/material';
@@ -22,6 +22,7 @@ const PurchaseForm = () => {
     { materialId: 0, quantity: 1 },
   ]);
   const [purchaseDate, setPurchaseDate] = useState<string>('');
+  const [totalPrice, setTotalPrice] = useState<number>(0); // New state for totalPrice
 
   useEffect(() => {
     const fetchMaterials = async () => {
@@ -65,14 +66,19 @@ const PurchaseForm = () => {
     setPurchaseItems(updatedItems);
   };
 
+  // Handle total price change
+  const handleTotalPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTotalPrice(parseFloat(e.target.value));
+  };
+
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault(); // Prevent page reload
   
-    if (!purchaseDate || purchaseItems.length === 0) {
+    if (!purchaseDate || purchaseItems.length === 0 || totalPrice <= 0) {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "Please provide a valid Purchase date and add at least one item",
+        text: "Please provide a valid Purchase date, add at least one item, and enter a valid total price",
       });
       return;
     }
@@ -81,7 +87,8 @@ const PurchaseForm = () => {
       const formData = new FormData();
       formData.append("purchaseDate", purchaseDate);
       formData.append("items", JSON.stringify(purchaseItems));
-  
+      formData.append("totalPrice", totalPrice.toString());  // Append totalPrice
+
       const response = await fetch("/api/purchases/equipment", {
         method: "POST",
         body: formData,
@@ -94,6 +101,7 @@ const PurchaseForm = () => {
           text: "Purchase Saved",
         });
         setPurchaseDate("");
+        setTotalPrice(0); // Reset totalPrice after successful submission
         setPurchaseItems([{ materialId: 0, quantity: 1 }]);
       } else {
         const { error } = await response.json();
@@ -112,7 +120,6 @@ const PurchaseForm = () => {
       });
     }
   };
-  
   
   return (
     <div className='flex h-screen'>
@@ -163,6 +170,14 @@ const PurchaseForm = () => {
                 InputLabelProps={{
                     shrink: true,
                 }}
+                />
+                <TextField
+                  label="Total Price"
+                  type="number"
+                  value={totalPrice}
+                  onChange={handleTotalPriceChange} // Handle the input change
+                  variant="outlined"
+                  fullWidth
                 />
                 <Button variant="contained" color="primary" type="submit">
                     Submit Purchase
