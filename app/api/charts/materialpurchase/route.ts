@@ -26,7 +26,6 @@ export async function GET(request: Request) {
             };
         }
 
-        // If no month is selected, group by the month
         const groupByField = month ? 'purchaseDate' : 'purchaseDate'; // No change here for "All Months"
 
         const data = await prisma.purchase.groupBy({
@@ -37,17 +36,28 @@ export async function GET(request: Request) {
             where: whereCondition,
         });
 
-        // Format data
         const formattedData = data.map(item => {
             const date = new Date(item.purchaseDate);
             const yearMonth = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
             return {
-                purchaseDate: month ? item.purchaseDate.toISOString().split('T')[0] : yearMonth, // Format by month if month filter is applied
+                purchaseDate: month ? item.purchaseDate.toISOString().split('T')[0] : yearMonth,
                 count: item._count.id,
             };
         });
 
-        return NextResponse.json(formattedData, { status: 200 });
+        // Get the range of years
+        const yearData = await prisma.purchase.findMany({
+            select: {
+                purchaseDate: true
+            },
+            distinct: ['purchaseDate'],
+            orderBy: { purchaseDate: 'asc' }
+        });
+
+        const earliestYear = new Date(yearData[0].purchaseDate).getFullYear();
+        const latestYear = new Date(yearData[yearData.length - 1].purchaseDate).getFullYear();
+
+        return NextResponse.json({ data: formattedData, earliestYear, latestYear }, { status: 200 });
     } catch (error) {
         console.error("Error fetching purchase frequency:", error);
         return NextResponse.json({ error: "Failed to fetch frequency data" }, { status: 500 });

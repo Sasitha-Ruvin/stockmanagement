@@ -31,6 +31,9 @@ const SideBar = () => {
 
         {/* Navigation */}
         <ul>
+          <li className='mb-4'>
+            <SideBarLinkButton href='/dashboard' label="Dashboard"/>
+          </li>
           <li className="mb-4">
               <SideBarLinkButton href="/materialstocks/index" label="Material Stock Management" />
           </li>
