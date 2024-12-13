@@ -16,7 +16,7 @@ const useEquipment = (searchQuery:string)=>{
                 id:product.id,
                 name:product.name,
                 description:product.description,
-                quntity:product.quantity,
+                quantity:product.quantity,
                 supplier:product.supplier,
                 unitPrice:product.unitPrice
             }));

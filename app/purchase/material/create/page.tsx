@@ -52,9 +52,14 @@ const PurchaseForm = () => {
 
   const handleMaterialChange = (index: number, field: keyof PurchaseItem, value: string | number) => {
     const updatedItems = [...purchaseItems];
-    updatedItems[index] = { ...updatedItems[index], [field]: value };
+    if (field === 'quantity' && value === '') {
+      updatedItems[index] = { ...updatedItems[index], [field]: 0 }; // Set quantity to 0 if empty
+    } else {
+      updatedItems[index] = { ...updatedItems[index], [field]: field === 'quantity' ? parseInt(value as string, 10) : value };
+    }
     setPurchaseItems(updatedItems);
   };
+  
 
   const addPurchaseItem = () => {
     setPurchaseItems([...purchaseItems, { materialId: 0, quantity: 1 }]);
@@ -65,7 +70,9 @@ const PurchaseForm = () => {
     setPurchaseItems(updatedItems);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault(); // Prevent page reload
+  
     if (!purchaseDate || purchaseItems.length === 0) {
       Swal.fire({
         icon: "error",
@@ -110,6 +117,7 @@ const PurchaseForm = () => {
       });
     }
   };
+  
   
   return (
     <div className='flex h-screen'>

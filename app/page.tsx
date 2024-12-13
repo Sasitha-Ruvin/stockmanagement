@@ -55,7 +55,7 @@ export default function Home() {
           {error && <p className="text-red-500 text-center">{error}</p>}
 
           <input type="text"
-            placeholder="username"
+            placeholder="Username"
             value={username} 
             onChange={(e)=>setUsername(e.target.value)}
             className="w-full p-3 mt-4 border rounded-md bg-gray-200 text-black"

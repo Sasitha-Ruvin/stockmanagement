@@ -23,6 +23,25 @@ model Material {
   unitPrice   Float
   isDeleted   Boolean         @default(false)
   purchases   PurchaseItem[]  // Corrected the relation to point to PurchaseItem
+  issues      IssueItems[]
+}
+
+model MaterialIssue{
+  id          Int             @id @default(autoincrement())
+  issueDate   DateTime
+  issueItems   IssueItems[]
+  issueReason  String?
+  issuedBy     String?
+  issuedTo     String?
+}
+
+model IssueItems {
+  id              Int             @id @default(autoincrement())
+  quantity        Int
+  material        Material        @relation(fields:[materialId], references:[id])
+  materialId      Int
+  materialissue   MaterialIssue   @relation(fields:[materialissueId], references:[id])
+  materialissueId Int
 }
 
 model Purchase {
@@ -49,7 +68,23 @@ model EquipmentStock {
   unitPrice   Float
   supplier    String?
   isDeleted   Boolean         @default(false)
+  equipments  EquipmentItem[]
  
+}
+
+model EquipPurchase {
+  id                    Int       @id @default(autoincrement())
+  purchaseDate          DateTime
+  purchaseEquipment     EquipmentItem[]
+}
+
+model EquipmentItem {
+  id                   Int        @id @default(autoincrement())
+  quantity             Int
+  equipment            EquipmentStock   @relation(fields:[equipmentId], references:[id])
+  equipmentId          Int
+  equippurchase        EquipPurchase    @relation(fields:[purchaseId], references:[id])
+  purchaseId           Int
 }
 
 

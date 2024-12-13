@@ -55,7 +55,8 @@ const page = () => {
         <div className="mt-4">
             <div className="flex gap-4">
                 <ActionButton label="Remove Item" onClick={handleDelete} variant="outlined"/>
-                <ActionButton  label="New Purchase" color="success" variant="contained"/>
+                <ActionButton  label="New Purchase" color="success" variant="contained" link="/purchase/equipment/create"/>
+                <ActionButton label="Issue Items" color="primary" variant="contained" link="/issues/material/create"/>
 
             </div>
 

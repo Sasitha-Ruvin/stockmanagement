@@ -4,34 +4,38 @@ import { error } from "console";
 
 export async function GET() {
     try {
-        const purchases = await prisma.purchase.findMany({
+        const issues = await prisma.materialIssue.findMany({
             include:{
-                purchaseItems:{
+                issueItems:{
                     include:{
                         material:true
                     }
                 }
             }
         });
-        return NextResponse.json(purchases);
+        return NextResponse.json(issues)
         
     } catch (error) {
 
-        console.error(error);
-        return NextResponse.json({error:"Failed to Fetch Material Purchases"},{status:500})
+        console.log(error)
+        return NextResponse.json({error:"Failed to Fetch Material Issues"},{status:500})
         
     }
+    
 }
 
 export async function POST(request: Request) {
     const formData = await request.formData();
     try {
-        const purchaseDate = formData.get("purchaseDate")?.toString();
+        const issueDate = formData.get('issueDate')?.toString();
+        const issueReason = formData.get('issueReason')?.toString();
+        const issuedBy = formData.get('issuedBy')?.toString();
+        const issuedTo = formData.get('issuedTo')?.toString();
         const items = formData.get("items")?.toString();
 
-        if (!purchaseDate || !items) {
+        if (!issueDate || !items || !issuedBy || !issuedTo) {
             return NextResponse.json(
-                { error: "Missing Required Fields: purchaseDate or items" },
+                { error: "Missing Required Fields: Issue Date, Items, Issued By, or Issued To" },
                 { status: 400 }
             );
         }
@@ -41,13 +45,14 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: "Invalid Items Format" }, { status: 400 });
         }
 
-        // Start a Prisma transaction
         const transaction = await prisma.$transaction(async (prismaTransaction) => {
-            // Create the new purchase
-            const newPurchase = await prismaTransaction.purchase.create({
+            const newIssue = await prismaTransaction.materialIssue.create({
                 data: {
-                    purchaseDate: new Date(purchaseDate),
-                    purchaseItems: {
+                    issueDate: new Date(issueDate),
+                    issueReason,
+                    issuedBy,
+                    issuedTo,
+                    issueItems: {
                         create: parsedItems.map((item: any) => ({
                             materialId: parseInt(item.materialId, 10),
                             quantity: parseInt(item.quantity, 10),
@@ -56,24 +61,21 @@ export async function POST(request: Request) {
                 },
             });
 
-            // Update the material quantities
             for (const item of parsedItems) {
                 await prismaTransaction.material.update({
                     where: { id: parseInt(item.materialId, 10) },
                     data: {
                         quantity: {
-                            increment: parseInt(item.quantity, 10),
+                            decrement: parseInt(item.quantity, 10),
                         },
                     },
                 });
             }
-
-            return newPurchase;
+            return newIssue;
         });
-
         return NextResponse.json(transaction, { status: 201 });
     } catch (error) {
-        console.error("Error creating purchase:", error);
-        return NextResponse.json({ error: "Failed to Create Purchase" }, { status: 500 });
+        console.error("Error Creating Issue: ", error);
+        return NextResponse.json({ error: "Failed to Create Issue" }, { status: 500 });
     }
 }
