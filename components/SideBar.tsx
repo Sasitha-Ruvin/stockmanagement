@@ -53,7 +53,7 @@ const SideBar = () => {
               <SideBarLinkButton href="/issues/index" label="On Going Rentals" />
           </li>
           <li className='mb-4'>
-            <SideBarLinkButton href='/purchase/index' label='Purchases' />
+            <SideBarLinkButton href='/purchase/material/index' label='Material Purchases' />
           </li>
           {/* <li className="mb-4">
               <SideBarLinkButton href="/orders/index" label="Orders Management" />
