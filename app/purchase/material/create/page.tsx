@@ -14,14 +14,19 @@ interface Material {
 interface PurchaseItem {
   materialId: number;
   quantity: number;
+  unitPrice:number;
+  unitTotal:number;
 }
 
 const PurchaseForm = () => {
   const [materials, setMaterials] = useState<Material[]>([]);
   const [purchaseItems, setPurchaseItems] = useState<PurchaseItem[]>([
-    { materialId: 0, quantity: 1 },
+    { materialId: 0, quantity: 1,unitPrice:0,unitTotal:0 },
   ]);
   const [purchaseDate, setPurchaseDate] = useState<string>('');
+  const [supplier, setSupplier] = useState<string>('');
+  const [total, setTotal] = useState<number>(0);
+  const [reason, setReason] = useState<string>('');
 
   useEffect(() => {
     const fetchMaterials = async () => {
@@ -50,24 +55,32 @@ const PurchaseForm = () => {
     fetchMaterials();
   }, []);
 
+  const calculateTotal = (items:PurchaseItem[])=>{
+    const total = items.reduce((sum, item)=> sum + item.unitTotal, 0);
+    setTotal(total)
+  
+  }
+
   const handleMaterialChange = (index: number, field: keyof PurchaseItem, value: string | number) => {
     const updatedItems = [...purchaseItems];
-    if (field === 'quantity' && value === '') {
-      updatedItems[index] = { ...updatedItems[index], [field]: 0 }; // Set quantity to 0 if empty
-    } else {
-      updatedItems[index] = { ...updatedItems[index], [field]: field === 'quantity' ? parseInt(value as string, 10) : value };
+    updatedItems[index] ={
+      ...updatedItems[index],
+      [field]:field === 'quantity' || field === 'unitPrice' ? parseFloat(value as string) : value,
     }
+    updatedItems[index].unitTotal = updatedItems[index].quantity * updatedItems[index].unitPrice;
     setPurchaseItems(updatedItems);
+    calculateTotal(updatedItems);
   };
   
 
   const addPurchaseItem = () => {
-    setPurchaseItems([...purchaseItems, { materialId: 0, quantity: 1 }]);
+    setPurchaseItems([...purchaseItems, { materialId: 0, quantity: 1, unitPrice:0, unitTotal:0 }]);
   };
 
   const removePurchaseItem = (index: number) => {
     const updatedItems = purchaseItems.filter((_, i) => i !== index);
     setPurchaseItems(updatedItems);
+    calculateTotal(updatedItems)
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -86,6 +99,9 @@ const PurchaseForm = () => {
       const formData = new FormData();
       formData.append("purchaseDate", purchaseDate);
       formData.append("items", JSON.stringify(purchaseItems));
+      formData.append('total',total.toString());
+      formData.append('supplier',supplier.toString());
+      formData.append('reason',reason.toString());
   
       const response = await fetch("/api/purchases/material", {
         method: "POST",
@@ -99,7 +115,7 @@ const PurchaseForm = () => {
           text: "Purchase Saved",
         });
         setPurchaseDate("");
-        setPurchaseItems([{ materialId: 0, quantity: 1 }]);
+        setPurchaseItems([{ materialId: 0, quantity: 1, unitPrice:0, unitTotal:0 }]);
       } else {
         const { error } = await response.json();
         Swal.fire({
@@ -150,6 +166,22 @@ const PurchaseForm = () => {
                     onChange={(e) => handleMaterialChange(index, 'quantity', parseInt(e.target.value, 10))}
                     variant="outlined"
                     />
+                    <TextField 
+                     label="Unit Price"
+                     type='number'
+                     value={item.unitPrice}
+                     onChange={(e)=> handleMaterialChange(index, 'unitPrice', parseFloat(e.target.value))}
+                     variant='outlined'
+                    />
+                    <TextField
+                    label = "Unit Total"
+                    value={item.unitTotal.toFixed(2)}
+                    variant='outlined'
+                    InputProps={{
+                      readOnly:true,
+                    }}
+                    
+                    />
                     <IconButton color="secondary" onClick={() => removePurchaseItem(index)}>
                     <Delete />
                     </IconButton>
@@ -168,6 +200,32 @@ const PurchaseForm = () => {
                 InputLabelProps={{
                     shrink: true,
                 }}
+                />
+                <TextField
+                label="Supplier"
+                value={supplier}
+                onChange={(e)=> setSupplier(e.target.value)}
+                variant='outlined'  
+                fullWidth
+                />
+                <TextField
+                label="Purchase Reason"
+                value={reason}
+                onChange={(e)=>setReason(e.target.value)}
+                variant='outlined'
+                multiline
+                rows={3}
+                fullWidth
+                />
+                <TextField
+                label='Total'
+                value={total.toFixed(2)}
+                variant='outlined'
+                fullWidth
+                InputProps={{
+                  readOnly:true
+                }}
+                
                 />
                 <Button variant="contained" color="primary" type="submit">
                     Submit Purchase

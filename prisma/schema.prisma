@@ -48,11 +48,16 @@ model Purchase {
   id            Int             @id @default(autoincrement())
   purchaseDate  DateTime
   purchaseItems PurchaseItem[]
+  total         Float?
+  supplier      String?
+  purchase      String?
 }
 
 model PurchaseItem {
   id          Int       @id @default(autoincrement())
   quantity    Int
+  unitPrice   Float?
+  unitTotal   Float?
   material    Material   @relation(fields: [materialId], references: [id])
   materialId  Int
   purchase    Purchase   @relation(fields: [purchaseId], references: [id])

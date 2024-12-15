@@ -1,29 +1,39 @@
-// usePurchases.ts
-
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 
-const usePurchases = (searchQuery: string) => {
-  const router = useRouter();
+const useMaterialPurchases = (
+  searchQuery: string,
+  selectedYear: string | null,
+  selectedMonth: string | null
+) => {
   const [allPurchases, setAllPurchases] = useState<any[]>([]);
   const [filteredPurchases, setFilteredPurchases] = useState<any[]>([]);
-  const [selectedPurchaseId, setSelectedPurchaseId] = useState<string | null>(null);
+  const [selectedPurchaseId, setSelectedPurchaseId] = useState<string | null>(
+    null
+  );
 
   const fetchPurchases = async () => {
     try {
       const response = await fetch("/api/purchases/material");
       const data = await response.json();
 
-      const formattedData = data.map((purchase: any) => ({
-        id: purchase.id,
-        purchaseDate: new Date(purchase.purchaseDate).toLocaleDateString(),
-        totalItems: purchase.purchaseItems?.length || 0,
-        items: purchase.purchaseItems.map((item: any) => ({
-          name: item.material?.name,
-          quantity: item.quantity,
-        })),
-      }));
+      const formattedData = data.map((purchase: any) => { // DD-MM-YYYY
+
+        return {
+          id: purchase.id,
+          purchaseDate: new Date(purchase.purchaseDate).toDateString(),
+          totalItems: purchase.purchaseItems?.length || 0,
+          supplier: purchase.supplier,
+          reason: purchase.purchase,
+          total: purchase.total.toFixed(2),
+          items: purchase.purchaseItems.map((item: any) => ({
+            name: item.material?.name,
+            quantity: item.quantity,
+            unitPrice: item.unitPrice.toFixed(2),
+            unitTotal: item.unitTotal.toFixed(2),
+          })),
+        };
+      });
 
       setAllPurchases(formattedData);
       setFilteredPurchases(formattedData);
@@ -43,73 +53,43 @@ const usePurchases = (searchQuery: string) => {
   }, []);
 
   useEffect(() => {
+    let filtered = allPurchases;
+
     if (searchQuery) {
-      setFilteredPurchases(
-        allPurchases.filter((purchase) =>
-          purchase.supplierName.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      );
-    } else {
-      setFilteredPurchases(allPurchases);
+      const lowerCaseQuery = searchQuery.toLowerCase();
+      filtered = filtered.filter((purchase) => {
+        const matchesSupplier = purchase.supplier
+          .toLowerCase()
+          .includes(lowerCaseQuery);
+
+        const matchesItemName = purchase.items.some((item: any) =>
+          item.name.toLowerCase().includes(lowerCaseQuery)
+        );
+
+        return matchesSupplier || matchesItemName;
+      });
     }
-  }, [searchQuery, allPurchases]);
 
-//   const handleDeletePurchase = async () => {
-//     if (!selectedPurchaseId) {
-//       Swal.fire("Error", "Please select a purchase to delete", "info");
-//       return;
-//     }
+    if (selectedYear) {
+      filtered = filtered.filter(
+        (purchase) =>
+          new Date(
+            purchase.purchaseDate.split("-").reverse().join("-")
+          ).getFullYear().toString() === selectedYear
+      );
+    }
 
-//     Swal.fire({
-//       title: "Are you sure you want to delete this purchase?",
-//       text: "You will not be able to reverse this action",
-//       icon: "warning",
-//       showCancelButton: true,
-//       confirmButtonColor: "#d33",
-//       cancelButtonColor: "#3085d6",
-//       confirmButtonText: "Yes",
-//     }).then(async (result) => {
-//       if (result.isConfirmed) {
-//         Swal.fire({
-//           title: "Deleting...",
-//           text: "Please wait while removing the purchase",
-//           icon: "info",
-//           showConfirmButton: false,
-//           willOpen: () => {
-//             Swal.showLoading();
-//           },
-//         });
+    if (selectedMonth) {
+      filtered = filtered.filter(
+        (purchase) =>
+          new Date(
+            purchase.purchaseDate.split("-").reverse().join("-")
+          ).getMonth() + 1 === parseInt(selectedMonth)
+      );
+    }
 
-//         try {
-//           const response = await fetch(`/api/purchases/${selectedPurchaseId}`, {
-//             method: "DELETE",
-//           });
-
-//           if (!response.ok) {
-//             throw new Error("Failed to delete purchase");
-//           }
-
-//           Swal.fire({
-//             title: "Purchase Deleted",
-//             text: "The purchase has been deleted successfully.",
-//             icon: "success",
-//             confirmButtonText: "OK",
-//           }).then(() => {
-//             fetchPurchases();
-//             setSelectedPurchaseId(null);
-//           });
-//         } catch (error) {
-//           console.error("Error deleting purchase:", error);
-//           Swal.fire({
-//             title: "Error",
-//             text: "There was an issue deleting the purchase.",
-//             icon: "error",
-//             confirmButtonText: "OK",
-//           });
-//         }
-//       }
-//     });
-//   };
+    setFilteredPurchases(filtered);
+  }, [searchQuery, selectedYear, selectedMonth, allPurchases]);
 
   return {
     allPurchases,
@@ -120,4 +100,4 @@ const usePurchases = (searchQuery: string) => {
   };
 };
 
-export default usePurchases;
+export default useMaterialPurchases;

@@ -22,8 +22,11 @@ const DashboardPage = () => {
             <SideBar />
             <div className="flex-1 overflow-y-auto p-6">
                 <h1 className="text-xl font-bold">Dashboard</h1>
-                <PurchaseFrequencyChart/>
-                <ItemFrequencyChart/>
+                <div className="grid grid-cols-2 gap-5">
+                    <PurchaseFrequencyChart/>
+                    <ItemFrequencyChart/>
+                </div>
+                
             </div>
         </div>
     );

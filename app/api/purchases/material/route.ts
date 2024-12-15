@@ -28,6 +28,9 @@ export async function POST(request: Request) {
     try {
         const purchaseDate = formData.get("purchaseDate")?.toString();
         const items = formData.get("items")?.toString();
+        const total = parseFloat(formData.get('total')?.toString() || '0');
+        const supplier = formData.get('supplier')?.toString();
+        const reason = formData.get('reason')?.toString();
 
         if (!purchaseDate || !items) {
             return NextResponse.json(
@@ -47,10 +50,15 @@ export async function POST(request: Request) {
             const newPurchase = await prismaTransaction.purchase.create({
                 data: {
                     purchaseDate: new Date(purchaseDate),
+                    total:total,
+                    supplier:supplier,
+                    purchase:reason,
                     purchaseItems: {
                         create: parsedItems.map((item: any) => ({
                             materialId: parseInt(item.materialId, 10),
                             quantity: parseInt(item.quantity, 10),
+                            unitPrice:parseFloat(item.unitPrice),
+                            unitTotal:parseFloat(item.unitTotal)
                         })),
                     },
                 },
