@@ -41,13 +41,13 @@ const SideBar = () => {
               <SideBarLinkButton href="/equipment/index" label="Equipment Stock Management" />
           </li>
           <li className="mb-4">
-              <SideBarLinkButton href="/rents/index" label="Rental Stock Management" />
+              <SideBarLinkButton href="/rental/index" label="Rental Stock Management" />
           </li>
           <li className="mb-4">
               <SideBarLinkButton href="/issues/index" label="Stock Issues" />
           </li>
           <li className="mb-4">
-              <SideBarLinkButton href="/issues/index" label="Equipment Issues" />
+              <SideBarLinkButton href="/issues/equipment/index" label="Equipment Issues" />
           </li>
           <li className="mb-4">
               <SideBarLinkButton href="/issues/index" label="On Going Rentals" />
