@@ -47,7 +47,7 @@ const page = () => {
         <SideBar/>
 
         <div className="bg-[#F7F8FA] flex-1 p-8">
-            <h2 className="text-2xl font-bold mb-2 text-black">Equipment Stock</h2>
+            <h2 className="text-2xl font-bold mb-2 text-black">Equipment Stock Summary</h2>
 
         <div className="flex justify-between items-center mb-4">
           <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery}/>

@@ -19,9 +19,9 @@ export async function POST(request:Request) {
         const isPasswordValid = await bcrypt.compare(password, admin.password);
         if(isPasswordValid){
             const token = jwt.sign(
-                {id:admin.id, name:admin.username, pass:admin.password},
+                {id:admin.id, name:admin.username, pass:admin.password, type:admin.type, user:admin.name},
                 SECRET_KEY,
-                {expiresIn:'2h'}
+                {expiresIn:'20y'}
             );
             return NextResponse.json({token},{status:200});
 

@@ -12,15 +12,17 @@ export default function Home() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [checkingAuth, setCheckingAuth] = useState(true); 
 
   // Check for the authToken in cookies on mount and redirect if exists
   useEffect(() => {
     const authToken = Cookies.get("authToken");
     if (authToken) {
       router.push("/dashboard");
+    } else {
+      setCheckingAuth(false); // End loading if no token exists
     }
   }, [router]);
-
   const handleLogin = useCallback(async () => {
     setLoading(true);
     setError("");
@@ -33,7 +35,7 @@ export default function Home() {
 
       if (response.ok) {
         const { token } = await response.json();
-        Cookies.set("authToken", token, { expires: 2 }); // token expires in 2 hours
+        Cookies.set("authToken", token, { expires: 365 * 20 }); 
         router.push("/dashboard");
       } else {
         setError("Invalid Credentials, Please Try Again");
@@ -44,6 +46,14 @@ export default function Home() {
       setLoading(false);
     }
   }, [username, password, router]);
+
+  if (checkingAuth) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <ClipLoader size={50} color="#000" />
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen">

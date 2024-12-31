@@ -58,7 +58,7 @@ const page = () => {
     <div className="flex h-screen">
       <SideBar />
       <div className="bg-[#F7F8FA] flex-1 p-8">
-        <h2 className="text-2xl font-bold mb-2 text-black">Rental Purchases</h2>
+        <h2 className="text-2xl font-bold mb-2 text-black">Rental Purchases Summary</h2>
 
         <div className="flex justify-between items-center mb-4">
           <SearchBar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />

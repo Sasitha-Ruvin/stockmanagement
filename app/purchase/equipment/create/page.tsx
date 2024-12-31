@@ -125,7 +125,7 @@ const PurchaseForm = () => {
     <div className='flex h-screen'>
         <SideBar/>
         <div className='bg-[#F7F8FA] flex-1 p-8'>
-            <h2 className='text-2xl font-bold mb-4 text-black'>New Equipment Purchase</h2>
+            <h2 className='text-2xl font-bold mb-4 text-black'>Equipment Purchase</h2>
             <form onSubmit={handleSubmit} className="w-full max-w-2xl space-y-6">
                 {purchaseItems.map((item, index) => (
                 <div key={index} className="grid grid-cols-3 gap-4">

@@ -35,7 +35,7 @@ const SideBar = () => {
             <SideBarLinkButton href='/dashboard' label="Dashboard"/>
           </li>
           <li className="mb-4">
-              <SideBarLinkButton href="/materialstocks/index" label="Material Stock Management" />
+              <SideBarLinkButton href="/materialstocks/index" label="Material Stock Summary" />
           </li>
           <li className="mb-4">
               <SideBarLinkButton href="/equipment/index" label="Equipment Stock Management" />
@@ -44,16 +44,16 @@ const SideBar = () => {
               <SideBarLinkButton href="/rental/index" label="Rental Stock Management" />
           </li>
           <li className="mb-4">
-              <SideBarLinkButton href="/issues/index" label="Stock Issues" />
+              <SideBarLinkButton href="/issues/material/index" label="Material Stock Issues Summary" />
           </li>
           <li className="mb-4">
-              <SideBarLinkButton href="/issues/equipment/index" label="Equipment Issues" />
+              <SideBarLinkButton href="/issues/equipment/index" label="Equipment Stock Issues Summary" />
           </li>
           <li className="mb-4">
-              <SideBarLinkButton href="/order/index" label="On Going Rentals" />
+              <SideBarLinkButton href="/order/index" label="On Going Rents" />
           </li>
           <li className='mb-4'>
-            <SideBarLinkButton href='/purchase/material/index' label='Material Purchases' />
+            <SideBarLinkButton href='/purchase/material/index' label='Material Purchases Summary' />
           </li>
           {/* <li className="mb-4">
               <SideBarLinkButton href="/orders/index" label="Orders Management" />
