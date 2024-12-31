@@ -2,30 +2,32 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { error } from "console";
 
-export async function GET(request:Request, {params}: {params:{id:string}}) {
-    const {id} = params
+export async function GET(request: Request, { params }: { params: { id: string } }) {
+    const { id } = params;
 
     try {
-        const order = prisma.rentOrder.findUnique({
-            where: {id: Number(id)},
+        const order = await prisma.rentOrder.findUnique({
+            where: { id: Number(id) },
             include: {
-                rentitems:{
-                    include:{
-                        rentalstock:true,
-                    }
-                }
-            }
+                rentitems: {
+                    include: {
+                        rentalstock: true, // Ensure rentalstock is included
+                    },
+                },
+            },
         });
-        if(!order){
-            return new Response('Not Found', {status:404});
+
+        if (!order) {
+            return new Response('Not Found', { status: 404 });
         }
-        return new Response(JSON.stringify(order), {status:200});
+
+        return new Response(JSON.stringify(order), { status: 200 });
     } catch (error) {
-        console.log(error)
-        return NextResponse.json({error:"Failed to fetch Orders:"},{status:500})
+        console.error('Error fetching order:', error);
+        return new Response(JSON.stringify({ error: 'Failed to fetch order details' }), { status: 500 });
     }
-    
 }
+
 
 export async function PUT(request:Request, {params}:{params: {id:string}}) {
     const { id } = await params;
