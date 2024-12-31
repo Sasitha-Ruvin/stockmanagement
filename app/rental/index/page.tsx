@@ -49,7 +49,7 @@ const page = () => {
           <div className="flex gap-4">
             {/* <ActionButton label="Remove Item"  variant="outlined" color="error" /> */}
             <ActionButton label="New Purchase" color="success" variant="contained" link="/purchase/rental/create" />
-            <ActionButton label="Rent Items" color="primary" variant="contained" link="/orders/create" />
+            <ActionButton label="Rent Items" color="primary" variant="contained" link="/order/create" />
           </div>
         </div>
       </div>

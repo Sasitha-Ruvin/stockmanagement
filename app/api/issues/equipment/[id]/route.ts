@@ -28,7 +28,6 @@ export async function GET(request: Request, { params }: { params: { id: string }
   }
 }
 
-// PUT Request to update Equipment Issue
 // PUT Request to update Equipment Issue and reflect returned quantity in EquipmentStock
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
     const { id } = await params; // Extract ID from params

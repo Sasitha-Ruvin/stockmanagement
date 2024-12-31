@@ -15,6 +15,7 @@ async function main() {
             password:hashedPassword
         }
     })
+    
     console.log('COO seeded successfully');
 
     
